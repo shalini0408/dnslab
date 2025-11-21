@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victim Bank - Secure Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .status {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .info {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .ip-display {
+            background: #1f2937;
+            color: #10b981;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏦</div>
+        <h1>Victim Bank</h1>
+        <p class="subtitle">Secure Online Banking</p>
+        
+        <div class="status">
+            ✓ CONNECTED TO REAL SERVER
+        </div>
+        
+        <div class="info">
+            <h3>Welcome to Victim Bank</h3>
+            <p>You are viewing the legitimate website.</p>
+            <p>This is the real banking website at IP address:</p>
+            <div class="ip-display">10.5.0.10</div>
+            <p style="margin-top: 15px; font-size: 14px; color: #10b981;">
+                <strong>✓ DNS Resolution: CORRECT</strong><br>
+                <strong>✓ Connection: SECURE</strong><br>
+                <strong>✓ Server: AUTHENTIC</strong>
+            </p>
+        </div>
+        
+        <div class="info" style="margin-top: 20px; background: #dbeafe;">
+            <h3 style="color: #1e40af;">About This Lab</h3>
+            <p style="color: #1e3a8a; font-size: 14px;">
+                This is the legitimate website. When DNS cache poisoning succeeds, 
+                users would be redirected to a fake website instead. DNSSEC protects 
+                against such attacks by validating DNS responses cryptographically.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+

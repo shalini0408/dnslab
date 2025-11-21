@@ -1,0 +1,13 @@
+$TTL 60
+@ IN SOA ns1.victim.local. admin.victim.local. (
+    2025010101 ; Serial
+    3600       ; Refresh
+    900        ; Retry
+    604800     ; Expire
+    60 )       ; Negative Cache TTL
+
+@ IN NS ns1.victim.local.
+
+ns1 IN A 10.5.0.2
+www IN A 10.5.0.10 ; "real" web IP (logical target)
+

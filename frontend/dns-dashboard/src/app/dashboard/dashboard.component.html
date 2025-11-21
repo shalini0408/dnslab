@@ -1,0 +1,174 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🔒 DNS Cache Poisoning vs DNSSEC Lab</h1>
+    <p class="subtitle">Interactive Demonstration Dashboard</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    ⚠️ {{ error }}
+  </div>
+
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <div class="control-group">
+      <label>DNSSEC Protection:</label>
+      <button 
+        class="toggle-btn" 
+        [class.enabled]="dnssecEnabled"
+        [class.disabled]="!dnssecEnabled"
+        (click)="toggleDnssec()"
+        [disabled]="loading">
+        {{ dnssecEnabled ? '🛡️ ENABLED' : '⚠️ DISABLED' }}
+      </button>
+    </div>
+
+    <div class="control-group">
+      <button 
+        class="btn btn-primary" 
+        (click)="startAttack()"
+        [disabled]="attackRunning || loading">
+        ▶️ Start Attack
+      </button>
+      <button 
+        class="btn btn-danger" 
+        (click)="stopAttack()"
+        [disabled]="!attackRunning || loading">
+        ⏹️ Stop Attack
+      </button>
+      <button 
+        class="btn btn-secondary" 
+        (click)="clearCache()"
+        [disabled]="loading">
+        🔄 Clear Cache
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Panel -->
+  <div class="status-panel">
+    <div class="status-item">
+      <span class="label">Current Resolver:</span>
+      <span class="value">{{ currentResolver.resolver_name || 'Loading...' }}</span>
+      <span class="ip">({{ currentResolver.resolver_ip || 'N/A' }})</span>
+    </div>
+    <div class="status-item">
+      <span class="label">Resolved IP:</span>
+      <span class="value" [class.poisoned]="isPoisoned" [class.correct]="isCorrect">
+        {{ resolvedIp || 'Resolving...' }}
+      </span>
+      <span *ngIf="isPoisoned" class="badge badge-danger">⚠️ POISONED</span>
+      <span *ngIf="isCorrect" class="badge badge-success">✓ CORRECT</span>
+    </div>
+    <div class="status-item">
+      <span class="label">Attack Status:</span>
+      <span class="value" [class.attacking]="attackRunning">
+        {{ attackRunning ? '🔴 RUNNING' : '🟢 STOPPED' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'website'"
+      (click)="setActiveTab('website')">
+      🌐 Website
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'tcpdump'"
+      (click)="setActiveTab('tcpdump')">
+      📡 Network Traffic
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'logs'"
+      (click)="setActiveTab('logs')">
+      📋 Logs
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'plots'"
+      (click)="setActiveTab('plots')">
+      📊 Statistics
+    </button>
+  </div>
+
+  <!-- Content Panels -->
+  <div class="content-panel">
+    <!-- Website Panel -->
+    <div *ngIf="activeTab === 'website'" class="website-panel">
+      <div class="website-header">
+        <h3>Victim Website: www.victim.local</h3>
+        <button class="btn btn-sm" (click)="loadDnsResolution()">🔄 Refresh</button>
+      </div>
+      <iframe 
+        [src]="getWebsiteUrl()" 
+        class="website-iframe"
+        title="Victim Website">
+      </iframe>
+    </div>
+
+    <!-- TCPDUMP Panel -->
+    <div *ngIf="activeTab === 'tcpdump'" class="data-panel">
+      <div class="panel-header">
+        <h3>Network Traffic Capture (TCPDUMP)</h3>
+        <button class="btn btn-sm" (click)="loadTcpdump()">🔄 Refresh</button>
+      </div>
+      <pre class="output-text">{{ tcpdumpOutput || 'Click Refresh to capture network traffic...' }}</pre>
+    </div>
+
+    <!-- Logs Panel -->
+    <div *ngIf="activeTab === 'logs'" class="data-panel">
+      <div class="panel-header">
+        <h3>Resolver Logs</h3>
+        <button class="btn btn-sm" (click)="loadLogs()">🔄 Refresh</button>
+      </div>
+      <pre class="output-text">{{ logsOutput || 'Click Refresh to load logs...' }}</pre>
+    </div>
+
+    <!-- Plots Panel -->
+    <div *ngIf="activeTab === 'plots'" class="data-panel">
+      <div class="panel-header">
+        <h3>Attack Statistics</h3>
+        <button class="btn btn-sm" (click)="loadPlotData()">🔄 Refresh</button>
+      </div>
+      <div *ngIf="plotData" class="plot-container">
+        <div class="plot-item">
+          <h4>Poisoning Success Rate</h4>
+          <div class="plot-bars">
+            <div class="plot-bar">
+              <div class="bar-label">No DNSSEC</div>
+              <div class="bar-container">
+                <div class="bar" [style.width.%]="(plotData.no_dnssec / 100) * 100">
+                  {{ plotData.no_dnssec || 0 }}
+                </div>
+              </div>
+            </div>
+            <div class="plot-bar">
+              <div class="bar-label">With DNSSEC</div>
+              <div class="bar-container">
+                <div class="bar" [style.width.%]="(plotData.dnssec / 100) * 100">
+                  {{ plotData.dnssec || 0 }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!plotData" class="no-data">
+        No plot data available. Run experiments to generate data.
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+</div>
+

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+*.log
+
+# VSCode / Cursor
+.vscode/
+
+# Docker artifacts
+*.pid
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+

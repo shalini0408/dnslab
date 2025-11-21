@@ -1,0 +1,96 @@
+networks:
+  dnslab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
+
+services:
+
+  auth_dnssec:
+    build: ./auth_dnssec
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.2
+    cap_add:
+      - NET_ADMIN
+
+  resolver_plain:
+    build: ./resolver_plain
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.53
+    depends_on:
+      - auth_dnssec
+    cap_add:
+      - NET_ADMIN
+
+  resolver_dnssec:
+    build: ./resolver_dnssec
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.54
+    depends_on:
+      - auth_dnssec
+    cap_add:
+      - NET_ADMIN
+
+  attacker_plain:
+    build: ./attacker
+    environment:
+      - RESOLVER_IP=10.5.0.53
+      - DNS_TARGET=www.victim.local
+      - FAKE_IP=10.5.0.99
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.60
+    depends_on:
+      - resolver_plain
+    cap_add:
+      - NET_ADMIN
+
+  attacker_dnssec:
+    build: ./attacker
+    environment:
+      - RESOLVER_IP=10.5.0.54
+      - DNS_TARGET=www.victim.local
+      - FAKE_IP=10.5.0.99
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.61
+    depends_on:
+      - resolver_dnssec
+    cap_add:
+      - NET_ADMIN
+
+  website_real:
+    build: ./websites/real
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.10
+    ports:
+      - "8010:80"
+
+  website_fake:
+    build: ./websites/fake
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.99
+    ports:
+      - "8099:80"
+
+  control_api:
+    build: ./control_api
+    networks:
+      dnslab:
+        ipv4_address: 10.5.0.40
+    depends_on:
+      - resolver_plain
+      - resolver_dnssec
+      - website_real
+      - website_fake
+    ports:
+      - "5000:5000"
+    cap_add:
+      - NET_ADMIN
+
